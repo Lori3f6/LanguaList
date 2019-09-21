@@ -97,4 +97,34 @@ public class Langualist<T> implements List<T> {
     public List<T> subList(int fromIndex, int toIndex) {
         return null;
     }
+
+    private final class Node<T> {
+        private Node previous;
+        private Node next;
+        private final T data;
+        public Node(Node previousNode, T data) {
+            this.previous = previousNode;
+            this.data = data;
+        }
+
+        public void setPrevious(Node previous) {
+            this.previous = previous;
+        }
+
+        public void setNext(Node next) {
+            this.next = next;
+        }
+
+        public Node getPrevious() {
+            return previous;
+        }
+
+        public Node getNext() {
+            return next;
+        }
+
+        public T getData() {
+            return data;
+        }
+    }
 }
