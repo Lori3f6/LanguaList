@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.ListIterator;
 
 public class Langualist<T> implements List<T> {
+    private Node<T> initial;
+
     public int size() {
         return 0;
     }
@@ -102,6 +104,7 @@ public class Langualist<T> implements List<T> {
         private Node previous;
         private Node next;
         private final T data;
+
         public Node(Node previousNode, T data) {
             this.previous = previousNode;
             this.data = data;
