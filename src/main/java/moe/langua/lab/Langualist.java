@@ -33,7 +33,13 @@ public class Langualist<T> implements List<T> {
     }
 
     public boolean add(T t) {
-        return false;
+        Node<T> last = getTheLastNode();
+        if(last==null){
+            initial = new Node<T>(null,t);
+        }else{
+            last.setNext(new Node<T>(last,t));
+        }
+        return true;
     }
 
     public boolean remove(Object o) {
@@ -100,9 +106,25 @@ public class Langualist<T> implements List<T> {
         return null;
     }
 
+    private Node<T> getTheLastNode(){
+        if(initial==null){
+            return null;
+        }else{
+            Node<T> node = initial;
+            while(true){
+                if(initial.getNext()!=null){
+                    node = initial.getNext();
+                }else{
+                    break;
+                }
+            }
+            return node;
+        }
+    }
+
     private final class Node<T> {
-        private Node previous;
-        private Node next;
+        private Node<T> previous;
+        private Node<T> next;
         private final T data;
 
         public Node(Node previousNode, T data) {
@@ -118,11 +140,11 @@ public class Langualist<T> implements List<T> {
             this.next = next;
         }
 
-        public Node getPrevious() {
+        public Node<T> getPrevious() {
             return previous;
         }
 
-        public Node getNext() {
+        public Node<T> getNext() {
             return next;
         }
 
