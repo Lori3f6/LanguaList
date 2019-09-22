@@ -4,9 +4,11 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.prefs.PreferenceChangeEvent;
 
 public class Langualist<T> implements List<T> {
-    private Node<T> initial;
+    private Node<T> initialNode;
+    private Node<T> lastNode;
 
     public int size() {
         return 0;
@@ -33,11 +35,10 @@ public class Langualist<T> implements List<T> {
     }
 
     public boolean add(T t) {
-        Node<T> last = getTheLastNode();
-        if(last==null){
-            initial = new Node<T>(null,t);
-        }else{
-            last.setNext(new Node<T>(last,t));
+        if (lastNode == null) {
+            lastNode = initialNode = new Node<T>(null, t);
+        } else {
+            lastNode = lastNode.setNext(new Node<T>(lastNode, t));
         }
         return true;
     }
@@ -106,49 +107,35 @@ public class Langualist<T> implements List<T> {
         return null;
     }
 
-    private Node<T> getTheLastNode(){
-        if(initial==null){
-            return null;
-        }else{
-            Node<T> node = initial;
-            while(true){
-                if(initial.getNext()!=null){
-                    node = initial.getNext();
-                }else{
-                    break;
-                }
-            }
-            return node;
-        }
-    }
-
     private final class Node<T> {
         private Node<T> previous;
         private Node<T> next;
         private final T data;
 
-        public Node(Node previousNode, T data) {
+        private Node(Node previousNode, T data) {
             this.previous = previousNode;
             this.data = data;
         }
 
-        public void setPrevious(Node previous) {
+        private Node<T> setPrevious(Node<T> previous) {
             this.previous = previous;
-        }
-
-        public void setNext(Node next) {
-            this.next = next;
-        }
-
-        public Node<T> getPrevious() {
             return previous;
         }
 
-        public Node<T> getNext() {
+        private Node<T> setNext(Node<T> next) {
+            this.next = next;
             return next;
         }
 
-        public T getData() {
+        private Node<T> getPrevious() {
+            return previous;
+        }
+
+        private Node<T> getNext() {
+            return next;
+        }
+
+        private T getData() {
             return data;
         }
     }
