@@ -72,7 +72,12 @@ public class Langualist<T> implements List<T> {
     }
 
     public T get(int index) {
-        return null;
+        Node<T> target = getNodeByIndex(index);
+        if(target == null){
+            throw new IndexOutOfBoundsException();
+        }else {
+            return target.getData();
+        }
     }
 
     public T set(int index, T element) {
@@ -105,6 +110,18 @@ public class Langualist<T> implements List<T> {
 
     public List<T> subList(int fromIndex, int toIndex) {
         return null;
+    }
+
+    private Node<T> getNodeByIndex(int index) {
+        Node<T> target = initialNode;
+        for (int i = 0; i < index; i++) {
+            try {
+                target = target.getNext();
+            } catch (NullPointerException e) {
+                return null;
+            }
+        }
+        return target;
     }
 
     private final class Node<T> {
