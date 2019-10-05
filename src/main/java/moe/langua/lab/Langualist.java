@@ -180,7 +180,7 @@ public class Langualist<T> implements List<T> {
             if (pointer == null) return -1;
         }
         int index = 0;
-        if(modified){
+        if (modified) {
             while (true) {
                 pointer = pointer.previous;
                 if (pointer != null) {
@@ -189,8 +189,8 @@ public class Langualist<T> implements List<T> {
                     return index;
                 }
             }
-        }else {
-            return size-reverseIndex;
+        } else {
+            return size - reverseIndex;
         }
     }
 
