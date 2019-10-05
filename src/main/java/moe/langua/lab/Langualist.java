@@ -48,7 +48,17 @@ public class Langualist<T> implements List<T> {
     }
 
     public Object[] toArray() {
-        return new Object[0];
+        int size = this.size();
+        Object[] arr = new Object[size];
+        Node<T> pointer = initialNode;
+        int index = 0;
+        while(true){
+            arr[index] = pointer.data;
+            pointer = pointer.next;
+            index++;
+            if(pointer==null) break;
+        }
+        return arr;
     }
 
     public <T1> T1[] toArray(T1[] a) {
