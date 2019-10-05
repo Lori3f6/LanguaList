@@ -66,7 +66,28 @@ public class Langualist<T> implements List<T> {
     }
 
     public boolean remove(Object o) {
-        return false;
+        if (isEmpty()) return false;
+        Node<T> pointer = initialNode;
+        while (true) {
+            if (pointer.data.equals(o)) break;
+            pointer = pointer.next;
+            if (pointer == null) return false;
+        }
+        Node<T> p = pointer.previous;
+        Node<T> n = pointer.next;
+        if (p == null) {
+            n.setPrevious(null);
+            initialNode = n;
+        } else {
+            if (n == null) {
+                lastNode = p;
+                p.setNext(null);
+            } else {
+                p.setNext(n);
+                n.setPrevious(p);
+            }
+        }
+        return true;
     }
 
     public boolean containsAll(Collection<?> c) {
@@ -155,7 +176,24 @@ public class Langualist<T> implements List<T> {
     }
 
     public T remove(int index) {
-        return null;
+        Node<T> target = getNodeByIndex(index);
+        if (target == null) throw new IndexOutOfBoundsException();
+        if (index == 0) {
+            initialNode = target.next;
+            target.next.setPrevious(null);
+            return null;
+        } else {
+            Node<T> p = target.previous;
+            Node<T> n = target.next;
+            if (n != null) {
+                p.setNext(n);
+                n.setPrevious(p);
+            } else {
+                lastNode = p;
+                p.setNext(null);
+            }
+            return p.data;
+        }
     }
 
     public int indexOf(Object o) {
@@ -207,6 +245,7 @@ public class Langualist<T> implements List<T> {
     }
 
     private Node<T> getNodeByIndex(int index) {
+        if (isEmpty()) throw new IndexOutOfBoundsException();
         if (index < 0) throw new IndexOutOfBoundsException("Index must be greater than or equal to zero.");
         Node<T> target = initialNode;
         for (int i = 0; i < index; i++) {
