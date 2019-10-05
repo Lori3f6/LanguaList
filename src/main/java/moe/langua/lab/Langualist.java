@@ -114,7 +114,7 @@ public class Langualist<T> implements List<T> {
                 Node<T> previous = target.getPrevious();
                 Node<T> next = target.getNext();
                 previous.setNext(new Node<T>(previous, element)).setNext(next);
-                if(target == lastNode){
+                if (target == lastNode) {
                     lastNode = previous.next;
                 }
                 return t;
@@ -123,7 +123,7 @@ public class Langualist<T> implements List<T> {
                 Node<T> next = target.getNext();
                 Node<T> n = new Node<T>(null, element);
                 initialNode = n;
-                if(target == lastNode){
+                if (target == lastNode) {
                     lastNode = n;
                 }
                 return t;
@@ -159,11 +159,39 @@ public class Langualist<T> implements List<T> {
     }
 
     public int indexOf(Object o) {
-        return 0;
+        int index = 0;
+        Node<T> pointer = initialNode;
+        while (true) {
+            if (pointer.data.equals(o)) break;
+            index++;
+            pointer = pointer.next;
+            if (pointer == null) return -1;
+        }
+        return index;
     }
 
     public int lastIndexOf(Object o) {
-        return 0;
+        int reverseIndex = 0;
+        Node<T> pointer = lastNode;
+        while (true) {
+            if (pointer.data.equals(o)) break;
+            reverseIndex++;
+            pointer = pointer.previous;
+            if (pointer == null) return -1;
+        }
+        int index = 0;
+        if(modified){
+            while (true) {
+                pointer = pointer.previous;
+                if (pointer != null) {
+                    index++;
+                } else {
+                    return index;
+                }
+            }
+        }else {
+            return size-reverseIndex;
+        }
     }
 
     public ListIterator<T> listIterator() {
