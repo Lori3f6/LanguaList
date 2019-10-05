@@ -179,7 +179,7 @@ public class Langualist<T> implements List<T> {
     }
 
     private Node<T> getNodeByIndex(int index) {
-        if (index < 0) throw new IndexOutOfBoundsException("Index ust be greater than or equal to zero.");
+        if (index < 0) throw new IndexOutOfBoundsException("Index must be greater than or equal to zero.");
         Node<T> target = initialNode;
         for (int i = 0; i < index; i++) {
             try {
