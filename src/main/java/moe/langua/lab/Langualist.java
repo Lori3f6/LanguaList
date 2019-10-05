@@ -4,18 +4,39 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.prefs.PreferenceChangeEvent;
 
 public class Langualist<T> implements List<T> {
     private Node<T> initialNode;
     private Node<T> lastNode;
+    private int size = 0;
+    private boolean modified = true;
 
     public int size() {
-        return 0;
+        if (!modified) return size;
+        if (initialNode == null) {
+            size = 0;
+            modified = false;
+            return size;
+        } else {
+            int count = 0;
+            Node<T> pointer = initialNode;
+            while (true) {
+                count++;
+                pointer = pointer.next;
+                if (pointer == null) break;
+            }
+            size = count;
+            modified = false;
+            return count;
+        }
     }
 
     public boolean isEmpty() {
-        return false;
+        if (initialNode == null) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public boolean contains(Object o) {
@@ -35,6 +56,7 @@ public class Langualist<T> implements List<T> {
     }
 
     public boolean add(T t) {
+        modified = true;
         if (lastNode == null) {
             lastNode = initialNode = new Node<T>(null, t);
         } else {
@@ -68,24 +90,68 @@ public class Langualist<T> implements List<T> {
     }
 
     public void clear() {
-
+        initialNode = null;
+        lastNode = null;
+        modified = true;
     }
 
     public T get(int index) {
         Node<T> target = getNodeByIndex(index);
-        if(target == null){
+        if (target == null) {
             throw new IndexOutOfBoundsException();
-        }else {
+        } else {
             return target.getData();
         }
     }
 
     public T set(int index, T element) {
-        return null;
+        Node<T> target = getNodeByIndex(index);
+        if (target == null) {
+            throw new IndexOutOfBoundsException();
+        } else {
+            if (index != 0) {
+                T t = target.data;
+                Node<T> previous = target.getPrevious();
+                Node<T> next = target.getNext();
+                previous.setNext(new Node<T>(previous, element)).setNext(next);
+                if(target == lastNode){
+                    lastNode = previous.next;
+                }
+                return t;
+            } else {
+                T t = target.data;
+                Node<T> next = target.getNext();
+                Node<T> n = new Node<T>(null, element);
+                initialNode = n;
+                if(target == lastNode){
+                    lastNode = n;
+                }
+                return t;
+            }
+
+        }
     }
 
     public void add(int index, T element) {
+        modified = true;
+        Node<T> target = getNodeByIndex(index);
+        if (target == null) {
+            throw new IndexOutOfBoundsException();
+        } else {
+            if (index != 0) {
+                Node<T> p = target.getPrevious();
+                Node<T> n = new Node<T>(p, element);
+                n.setNext(target);
+                target.setPrevious(n);
+                p.setNext(n);
+            } else {
+                Node<T> n = new Node<T>(null, element);
+                n.setNext(target);
+                target.setPrevious(n);
+                initialNode = n;
+            }
 
+        }
     }
 
     public T remove(int index) {
@@ -113,6 +179,7 @@ public class Langualist<T> implements List<T> {
     }
 
     private Node<T> getNodeByIndex(int index) {
+        if (index < 0) throw new IndexOutOfBoundsException("Index ust be greater than or equal to zero.");
         Node<T> target = initialNode;
         for (int i = 0; i < index; i++) {
             try {
