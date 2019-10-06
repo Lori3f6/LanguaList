@@ -9,30 +9,13 @@ public class Langualist<T> implements List<T> {
     private Node<T> initialNode;
     private Node<T> lastNode;
     private int size = 0;
-    private boolean modified = true;
 
     public int size() {
-        if (!modified) return size;
-        if (initialNode == null) {
-            size = 0;
-            modified = false;
-            return size;
-        } else {
-            int count = 0;
-            Node<T> pointer = initialNode;
-            while (true) {
-                count++;
-                pointer = pointer.next;
-                if (pointer == null) break;
-            }
-            size = count;
-            modified = false;
-            return count;
-        }
+        return size;
     }
 
     public boolean isEmpty() {
-        if (initialNode == null) {
+        if (size == 0) {
             return true;
         } else {
             return false;
@@ -52,11 +35,11 @@ public class Langualist<T> implements List<T> {
         Object[] arr = new Object[size];
         Node<T> pointer = initialNode;
         int index = 0;
-        while(true){
+        while (true) {
             arr[index] = pointer.data;
             pointer = pointer.next;
             index++;
-            if(pointer==null) break;
+            if (pointer == null) break;
         }
         return arr;
     }
@@ -66,12 +49,12 @@ public class Langualist<T> implements List<T> {
     }
 
     public boolean add(T t) {
-        modified = true;
         if (lastNode == null) {
             lastNode = initialNode = new Node<T>(null, t);
         } else {
             lastNode = lastNode.setNext(new Node<T>(lastNode, t));
         }
+        size++;
         return true;
     }
 
@@ -97,6 +80,7 @@ public class Langualist<T> implements List<T> {
                 n.setPrevious(p);
             }
         }
+        size--;
         return true;
     }
 
@@ -123,7 +107,7 @@ public class Langualist<T> implements List<T> {
     public void clear() {
         initialNode = null;
         lastNode = null;
-        modified = true;
+        size = 0;
     }
 
     public T get(int index) {
@@ -164,8 +148,8 @@ public class Langualist<T> implements List<T> {
     }
 
     public void add(int index, T element) {
-        modified = true;
-        Node<T> target = getNodeByIndex(index);
+        Node<T> target;
+        target = getNodeByIndex(index);
         if (target == null) {
             throw new IndexOutOfBoundsException();
         } else {
@@ -183,6 +167,7 @@ public class Langualist<T> implements List<T> {
             }
 
         }
+        size++;
     }
 
     public T remove(int index) {
@@ -191,6 +176,7 @@ public class Langualist<T> implements List<T> {
         if (index == 0) {
             initialNode = target.next;
             target.next.setPrevious(null);
+            size--;
             return null;
         } else {
             Node<T> p = target.previous;
@@ -202,6 +188,7 @@ public class Langualist<T> implements List<T> {
                 lastNode = p;
                 p.setNext(null);
             }
+            size--;
             return p.data;
         }
     }
@@ -228,18 +215,7 @@ public class Langualist<T> implements List<T> {
             if (pointer == null) return -1;
         }
         int index = 0;
-        if (modified) {
-            while (true) {
-                pointer = pointer.previous;
-                if (pointer != null) {
-                    index++;
-                } else {
-                    return index;
-                }
-            }
-        } else {
-            return size - reverseIndex;
-        }
+        return size - reverseIndex;
     }
 
     public ListIterator<T> listIterator() {
@@ -257,16 +233,30 @@ public class Langualist<T> implements List<T> {
     private Node<T> getNodeByIndex(int index) {
         if (isEmpty()) throw new IndexOutOfBoundsException();
         if (index < 0) throw new IndexOutOfBoundsException("Index must be greater than or equal to zero.");
-        Node<T> target = initialNode;
-        for (int i = 0; i < index; i++) {
-            try {
-                target = target.getNext();
-            } catch (NullPointerException e) {
-                return null;
+        if (index < size >> 1) {
+            Node<T> pointer = initialNode;
+            for (int i = 0; i < index; i++) {
+                try {
+                    pointer = pointer.getNext();
+                } catch (NullPointerException e) {
+                    return null;
+                }
             }
+            return pointer;
+        } else {
+            Node<T> pointer = lastNode;
+            int reverseIndex = size - index;
+            for (int i = 0; i < reverseIndex; i++) {
+                try {
+                    pointer = pointer.getPrevious();
+                } catch (NullPointerException e) {
+                    return null;
+                }
+            }
+            return pointer;
         }
-        return target;
     }
+
 
     private final class Node<T> {
         private Node<T> previous;
