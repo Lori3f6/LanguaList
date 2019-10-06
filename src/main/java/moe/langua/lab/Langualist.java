@@ -126,8 +126,8 @@ public class Langualist<T> implements List<T> {
         } else {
             if (index != 0) {
                 T t = target.data;
-                Node<T> previous = target.getPrevious();
-                Node<T> next = target.getNext();
+                Node<T> previous = target.previous;
+                Node<T> next = target.next;
                 previous.setNext(new Node<T>(previous, element)).setNext(next);
                 if (target == lastNode) {
                     lastNode = previous.next;
@@ -135,7 +135,7 @@ public class Langualist<T> implements List<T> {
                 return t;
             } else {
                 T t = target.data;
-                Node<T> next = target.getNext();
+                Node<T> next = target.next;
                 Node<T> n = new Node<T>(null, element);
                 initialNode = n;
                 if (target == lastNode) {
@@ -154,7 +154,7 @@ public class Langualist<T> implements List<T> {
             throw new IndexOutOfBoundsException();
         } else {
             if (index != 0) {
-                Node<T> p = target.getPrevious();
+                Node<T> p = target.previous;
                 Node<T> n = new Node<T>(p, element);
                 n.setNext(target);
                 target.setPrevious(n);
@@ -237,7 +237,7 @@ public class Langualist<T> implements List<T> {
             Node<T> pointer = initialNode;
             for (int i = 0; i < index; i++) {
                 try {
-                    pointer = pointer.getNext();
+                    pointer = pointer.next;
                 } catch (NullPointerException e) {
                     return null;
                 }
@@ -248,7 +248,7 @@ public class Langualist<T> implements List<T> {
             int reverseIndex = size - index;
             for (int i = 0; i < reverseIndex; i++) {
                 try {
-                    pointer = pointer.getPrevious();
+                    pointer = pointer.previous;
                 } catch (NullPointerException e) {
                     return null;
                 }
@@ -275,14 +275,6 @@ public class Langualist<T> implements List<T> {
 
         private Node<T> setNext(Node<T> next) {
             this.next = next;
-            return next;
-        }
-
-        private Node<T> getPrevious() {
-            return previous;
-        }
-
-        private Node<T> getNext() {
             return next;
         }
 
