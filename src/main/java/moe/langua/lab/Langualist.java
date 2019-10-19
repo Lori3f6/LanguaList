@@ -258,12 +258,12 @@ public class Langualist<T> implements List<T> {
     }
 
 
-    private final class Node<T> {
+    private static final class Node<T> {
         private Node<T> previous;
         private Node<T> next;
         private final T data;
 
-        private Node(Node previousNode, T data) {
+        private Node(Node<T> previousNode, T data) {
             this.previous = previousNode;
             this.data = data;
         }
