@@ -5,7 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
-public class Langualist<T> implements List<T> {
+public class Langualist<T> implements List<T>{
     private Node<T> initialNode;
     private Node<T> lastNode;
     private int size = 0;
@@ -128,15 +128,14 @@ public class Langualist<T> implements List<T> {
                 T t = target.data;
                 Node<T> previous = target.previous;
                 Node<T> next = target.next;
-                previous.setNext(new Node<T>(previous, element)).setNext(next);
+                previous.setNext(new Node<>(previous, element)).setNext(next);
                 if (target == lastNode) {
                     lastNode = previous.next;
                 }
                 return t;
             } else {
                 T t = target.data;
-                Node<T> next = target.next;
-                Node<T> n = new Node<T>(null, element);
+                Node<T> n = new Node<>(null, element);
                 initialNode = n;
                 if (target == lastNode) {
                     lastNode = n;
@@ -155,12 +154,12 @@ public class Langualist<T> implements List<T> {
         } else {
             if (index != 0) {
                 Node<T> p = target.previous;
-                Node<T> n = new Node<T>(p, element);
+                Node<T> n = new Node<>(p, element);
                 n.setNext(target);
                 target.setPrevious(n);
                 p.setNext(n);
             } else {
-                Node<T> n = new Node<T>(null, element);
+                Node<T> n = new Node<>(null, element);
                 n.setNext(target);
                 target.setPrevious(n);
                 initialNode = n;
@@ -214,7 +213,6 @@ public class Langualist<T> implements List<T> {
             pointer = pointer.previous;
             if (pointer == null) return -1;
         }
-        int index = 0;
         return size - reverseIndex;
     }
 
@@ -232,7 +230,7 @@ public class Langualist<T> implements List<T> {
 
     private Node<T> getNodeByIndex(int index) {
         if (isEmpty()) throw new IndexOutOfBoundsException();
-        if (index < 0) throw new IndexOutOfBoundsException("Index must be greater than or equal to zero.");
+        if (index < 0) throw new IndexOutOfBoundsException("Index must be greater than or equal to 0");
         if (index < size >> 1) {
             Node<T> pointer = initialNode;
             for (int i = 0; i < index; i++) {
