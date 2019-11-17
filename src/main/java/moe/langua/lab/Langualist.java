@@ -1,11 +1,13 @@
 package moe.langua.lab;
 
+import com.sun.istack.internal.NotNull;
+
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
-public class Langualist<T> implements List<T>{
+public class Langualist<T> implements List<T> {
     private Node<T> initialNode;
     private Node<T> lastNode;
     private int size = 0;
@@ -49,7 +51,7 @@ public class Langualist<T> implements List<T>{
     }
 
     public boolean add(T t) {
-        if (lastNode == null) {
+        if (size == 0) {
             lastNode = initialNode = new Node<T>(null, t);
         } else {
             lastNode = lastNode.setNext(new Node<T>(lastNode, t));
@@ -60,14 +62,11 @@ public class Langualist<T> implements List<T>{
 
     public boolean remove(Object o) {
         if (isEmpty()) return false;
-        Node<T> pointer = initialNode;
-        while (true) {
-            if (pointer.data.equals(o)) break;
-            pointer = pointer.next;
-            if (pointer == null) return false;
-        }
-        Node<T> p = pointer.previous;
-        Node<T> n = pointer.next;
+        int index = this.indexOf(o);
+        if (index == -1) return false;
+        Node<T> target = getNodeByIndex(index);
+        Node<T> p = target.previous;
+        Node<T> n = target.next;
         if (p == null) {
             n.setPrevious(null);
             initialNode = n;
@@ -111,70 +110,59 @@ public class Langualist<T> implements List<T>{
     }
 
     public T get(int index) {
-        Node<T> target = getNodeByIndex(index);
-        if (target == null) {
-            throw new IndexOutOfBoundsException();
-        } else {
-            return target.getData();
-        }
+        return getNodeByIndex(index).data;
     }
 
     public T set(int index, T element) {
         Node<T> target = getNodeByIndex(index);
-        if (target == null) {
-            throw new IndexOutOfBoundsException();
-        } else {
-            if (index != 0) {
-                T t = target.data;
-                Node<T> previous = target.previous;
-                Node<T> next = target.next;
-                previous.setNext(new Node<>(previous, element)).setNext(next);
-                if (target == lastNode) {
-                    lastNode = previous.next;
-                }
-                return t;
-            } else {
-                T t = target.data;
-                Node<T> n = new Node<>(null, element);
-                initialNode = n;
-                if (target == lastNode) {
-                    lastNode = n;
-                }
-                return t;
+        if (index == 0) {
+            T t = target.data;
+            Node<T> n = new Node<>(null, element);
+            initialNode = n;
+            if (target == lastNode) {
+                lastNode = n;
             }
-
+            return t;
+        } else {
+            T t = target.data;
+            Node<T> previous = target.previous;
+            Node<T> next = target.next;
+            previous.setNext(new Node<>(previous, element)).setNext(next);
+            if (target == lastNode) {
+                lastNode = previous.next;
+            }
+            return t;
         }
     }
 
     public void add(int index, T element) {
-        Node<T> target;
-        target = getNodeByIndex(index);
-        if (target == null) {
-            throw new IndexOutOfBoundsException();
+        Node<T> target = getNodeByIndex(index);
+        if (index != 0) {
+            Node<T> p = target.previous;
+            Node<T> n = new Node<>(p, element);
+            n.setNext(target);
+            target.setPrevious(n);
+            p.setNext(n);
         } else {
-            if (index != 0) {
-                Node<T> p = target.previous;
-                Node<T> n = new Node<>(p, element);
-                n.setNext(target);
-                target.setPrevious(n);
-                p.setNext(n);
-            } else {
-                Node<T> n = new Node<>(null, element);
-                n.setNext(target);
-                target.setPrevious(n);
-                initialNode = n;
-            }
-
+            Node<T> n = new Node<>(null, element);
+            n.setNext(target);
+            target.setPrevious(n);
+            initialNode = n;
+            if (size == 0) lastNode = n;
         }
         size++;
     }
 
     public T remove(int index) {
         Node<T> target = getNodeByIndex(index);
-        if (target == null) throw new IndexOutOfBoundsException();
         if (index == 0) {
-            initialNode = target.next;
-            target.next.setPrevious(null);
+            if (size == 1) {
+                initialNode = null;
+                lastNode = null;
+            } else {
+                initialNode = target.next;
+                target.next.setPrevious(null);
+            }
             size--;
             return null;
         } else {
@@ -237,7 +225,7 @@ public class Langualist<T> implements List<T>{
                 try {
                     pointer = pointer.next;
                 } catch (NullPointerException e) {
-                    return null;
+                    throw new IndexOutOfBoundsException();
                 }
             }
             return pointer;
@@ -248,7 +236,7 @@ public class Langualist<T> implements List<T>{
                 try {
                     pointer = pointer.previous;
                 } catch (NullPointerException e) {
-                    return null;
+                    throw new IndexOutOfBoundsException();
                 }
             }
             return pointer;
